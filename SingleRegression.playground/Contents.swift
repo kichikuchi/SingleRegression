@@ -3,9 +3,15 @@
 import Foundation
 
 struct Matrix {
+    
     let element: [Double]
+    
     func sum() -> Double {
         return element.reduce(0.0) { $0 + $1 }
+    }
+    
+    func mean() -> Double {
+        return sum() / Double(element.count)
     }
 }
 
