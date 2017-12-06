@@ -6,7 +6,7 @@ import XCPlayground
 
 struct Matrix {
     
-    var element: [Double]
+    let element: [Double]
     
     func sum() -> Double {
         return element.reduce(0.0) { $0 + $1 }
@@ -14,10 +14,6 @@ struct Matrix {
     
     func mean() -> Double {
         return sum() / Double(element.count)
-    }
-    
-    mutating func difference(_ diff: Double) {
-        element = element.map { $0 - diff }
     }
 }
 
@@ -36,23 +32,28 @@ func *(lhs: Matrix, rhs: Matrix) -> Matrix {
     return Matrix(element: array)
 }
 
-// 学習に用いるサンプルデータ
-let x: [Double] = [40, 38, 36, 35, 32, 45, 55, 32, 28, 41, 44, 50, 43, 44, 31]
-let y: [Double] = [137000, 93000, 95000, 97000, 85000, 140000, 213000, 82000, 75000, 103000, 110000, 195000, 124000, 99000, 72000]
+func -(lhs: Matrix, rhs: Double) -> Matrix {
+    let array = lhs.element.map { $0 - rhs }
+    return Matrix(element: array)
+}
 
-var xMatrix = Matrix(element: x)
-var yMatrix = Matrix(element: y)
+// 学習に用いるサンプルデータ
+let sample_x: [Double] = [40, 38, 36, 35, 32, 45, 55, 32, 28, 41, 44, 50, 43, 44, 31]
+let sample_y: [Double] = [137000, 93000, 95000, 97000, 85000, 140000, 213000, 82000, 75000, 103000, 110000, 195000, 124000, 99000, 72000]
+
+var x = Matrix(element: sample_x)
+var y = Matrix(element: sample_y)
 
 // 中心化
-let bar_x = xMatrix.mean()
-xMatrix.difference(bar_x)
+let bar_x = x.mean()
+let c_x = x - bar_x
 
-let bar_y = yMatrix.mean()
-yMatrix.difference(bar_y)
+let bar_y = y.mean()
+let c_y = y - bar_y
 
 // パラメータを求める
-let xx = xMatrix * xMatrix
-let xy = xMatrix * yMatrix
+let xx = c_x * c_x
+let xy = c_x * c_y
 let a = xy.sum() / xx.sum()
 
 // 予測値を求める
